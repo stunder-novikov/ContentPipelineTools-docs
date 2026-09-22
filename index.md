@@ -77,21 +77,22 @@ Everything below appears in menus you already use. There is no separate window t
 
 ## Material Bake — a texture instead of a subgraph
 
-A `Baked Texture` node placed in a material graph marks the subgraph feeding it. The tool renders
+A `Bake To Texture` node placed in a material graph marks the subgraph feeding it. The tool renders
 that subgraph into a texture, writes the texture into a texture parameter on the material, and walks
 the whole tree of material instances beneath it so each one gets the result too.
 
 **Where it lives**
 
-- the node: right-click in a material graph, *Baked Texture*
-- one material: right-click the asset in the Content Browser, **Texture baker → Bake textures**
-- the whole project: **Build → Texture processing → Rebuild baked textures**
-- settings: **Project Settings → Material Bake → General**
+- the node: right-click in a material graph, *Bake To Texture* (under *Texture*)
+- one material: right-click the asset in the Content Browser, **Material Bake → Bake textures**
+- the whole project: **Build → Material Bake → Rebuild baked textures**
+- settings: **Project Settings → Material Bake**
 
-**The node's inputs.** The mode decides how many pins it has and what they mean: an RGBA float4, a
-normal packed into red and green with two spare channels, two normals packed into one texture, and
-single-channel variants. The output is a texture object, or a sampled colour when *Sampler Output*
-is on, which is what you want when the node feeds Base Color directly.
+**The node's inputs.** *Write mode* decides how many pins it has and what they mean: an RGBA float4
+(the default), a normal packed into red and green with two spare channels (*Normal + BA*), two normals
+packed into one texture (*Two Normals*), and single-channel variants. The output is a texture object,
+or a sampled colour when *As sampler* is on, which is what you want when the node feeds Base Color
+directly.
 
 **What it writes.** `Parameter Name` is the texture parameter it creates and fills, so a material
 instance can override it later. `Default Size` is the resolution, unless you connect a texture to
@@ -235,9 +236,9 @@ so run them on a checked-in tree and read the log before believing the result.
   small collision boxes, and one assembly already wrapped in a culling bound.
 - `Materials/M_ExampleSubgraph` — three Noise nodes at six octaves wired straight into Base Color:
   the material as an artist would leave it, and the **before** half of the comparison.
-- `Materials/M_ExampleBake` and `MI_ExampleBake` — the same subgraph behind a `Baked Texture` node,
+- `Materials/M_ExampleBake` and `MI_ExampleBake` — the same subgraph behind a `Bake To Texture` node,
   and an instance under it. Deliberately **not** baked: pressing
-  **Build → Texture processing → Rebuild baked textures** is the demonstration, and the texture
+  **Build → Material Bake → Rebuild baked textures** is the demonstration, and the texture
   appears in `/Game/BakedTextures`.
 
 **The bake, in the engine's own numbers, on the content you have.** Open `M_ExampleSubgraph`, turn on
