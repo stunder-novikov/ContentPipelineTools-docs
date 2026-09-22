@@ -1,0 +1,34 @@
+# GitHub Pages configuration for the Content Pipeline Tools documentation site.
+#
+# `remote_theme` rather than a vendored theme: Pages builds it, so the repository stays three markdown
+# files, an icon and one layout. Cayman is one of the themes GitHub hosts itself, so there is nothing
+# to install and nothing that can rot when a gem version moves.
+#
+# `_layouts/default.html` is our own copy of that theme's layout with the "View on GitHub" button
+# removed: this is documentation for a plugin someone paid for, and a button sending the reader into a
+# repository is noise. The theme is pinned to a tag, so keeping a copy of its layout loses no updates.
+#
+# To publish: create a repository, push these files, then Settings -> Pages -> Deploy from a branch ->
+# main / (root). The address is https://<user>.github.io/<repo>/ and that is what DocsURL wants.
+
+title: Content Pipeline Tools
+description: Five editor tools for Unreal Engine 5.8 - bake a material subgraph to a texture, batch repeated props into instanced components in one culling bound, merge collision, override bounds.
+
+remote_theme: pages-themes/cayman@v0.2.0
+
+plugins:
+  - jekyll-remote-theme
+  # Named explicitly because our own layout calls {% seo %}. Pages provides the plugin either way, but
+  # the layout that depends on it is ours now, so the dependency is written down rather than inherited
+  # by luck.
+  - jekyll-seo-tag
+
+# The README is written for a buyer who has just installed the plugin, so it is the front page.
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+# Nothing here is a blog.
+show_downloads: false
