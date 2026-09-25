@@ -101,8 +101,8 @@ instance can override it later. `Default Size` is the resolution, unless you con
 **Reuse by content, not by name.** Every baked texture carries a hash of its pixels as an asset tag.
 A second material that bakes to the same image is pointed at the texture that already exists rather
 than producing a copy, and the match is confirmed by comparing the images, so a hash collision
-cannot hand back the wrong picture. The tags are read back through the asset registry at startup, so
-the reuse works across sessions and across a whole library.
+cannot hand back the wrong picture. The tags are read back through the asset registry when a bake run
+starts, so the reuse works across sessions and across a whole library.
 
 **Where the textures land.** `/Game/BakedTextures`, in a subfolder named after the material's own
 folder, as `<Material>_<Parameter>_<Hash>`. The hash in the name is what keeps a rebake from
@@ -126,7 +126,9 @@ masks, expensive blends - not for tidying a graph up.
 **Worth knowing.** The bake runs on the editor's tick and reports progress in the corner. A material
 that cannot compile is refused with the compiler's own message rather than waited on. By default the
 tool shows the list of assets it is about to touch before it starts; turn that dialog off in the
-settings for unattended runs.
+settings for unattended runs. The bake renders each subgraph through a throwaway copy of the material,
+named `<Material>_<Parameter>_IMM` in the baked-textures folder; those copies are deleted when the run
+ends, unless *Do not remove intermediates* is on in the settings.
 
 ## Wrap & Batch — instancing with one culling bound
 
@@ -222,9 +224,10 @@ Tools*:
 | *Repair Widget Variable Writes* | finds Set nodes writing to a designer widget variable, which UE 5 forbids and which keep an old Widget Blueprint from compiling |
 | *Retarget Deprecated Editor Scripting Calls* | re-points calls to the removed Editor Scripting Utilities functions at the stand-ins this plugin provides |
 
-Both take a `bApply` argument: with it **false** they only count and log what they found, which is how
-to use them first. With it true they edit the Blueprint and recompile it. They change somebody's asset,
-so run them on a checked-in tree and read the log before believing the result.
+Both have a report-only mode - `bRemove` on the first, `bApply` on the second: with it **false** they
+only count and log what they found, which is how to use them first. With it true they edit the
+Blueprint and recompile it. They change somebody's asset, so run them on a checked-in tree and read the
+log before believing the result.
 
 ---
 
